@@ -27,13 +27,14 @@ function read_climate_norms(path)
 end
 
 function read_cloudy_data(path)
-    data = CSV.read(path, delim="  ", ignorerepeated=true) # read as fixed width
-    locations = CSV.File(IOBuffer(join(data[2:end, 1], "\n")), header=[:zip], types=[String])
+    data = CSV.read(path, delim="  ", ignorerepeated=true)
+    locations = CSV.File(IOBuffer(join(locations[2:end, 1], "\n")), header=[:zip], types=[String])
     locations = DataFrames.DataFrame(locations)
     locations[:city] = SubString.(locations[:zip], 6)
     locations[:zip] = SubString.(locations[:zip], 1, 5)
-    data = CSV.File(IOBuffer(join(strip.(data[2:end, 2]), "\n")), header=Symbol.(strip.(names(data))), delim=' ', ignorerepeated=true)
-    data = DataFrames.DataFrame(data)
+    DataFrames.DataFrame(split.(strip.(join.(eachrow(data[2:end, 2:end]), ' '))))
+    # data = CSV.File(IOBuffer(join(strip.(data[2:end, 2]), "\n")), header=Symbol.(strip.(names(data))), delim=' ', ignorerepeated=true)
+    # data = DataFrames.DataFrame(data)
     data = hcat(locations, data)
     data
 end
