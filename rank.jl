@@ -17,9 +17,9 @@ DATA_DIR = "../"
 
 function read_climate_norms(path)
     data = CSV.read(path, delim="    ")
-    locations = CSV.File(IOBuffer(join(data["NORMALS 1981-2010"], "\n")), header=["zip", "city", "state"], types=[String, String, String])
+    locations = CSV.File(IOBuffer(join(data[names(d)[1]], "\n")), header=["zip", "city", "state"], types=[String, String, String])
     locations = DataFrames.DataFrame(data)
-    data = CSV.File(IOBuffer(join(data["                 YRS  JAN   FEB   MAR   APR   MAY   JUN   JUL   AUG   SEP   OCT   NOV   DEC   ANN"], "\n")), header=["YRS", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC", "ANN"])
+    data = CSV.File(IOBuffer(join(data[names(d)[2]], "\n")), header=split(strip(names(d)[2])))
     data = DataFrames.DataFrame(data)
     data = hcat(precip_locations, data)
     data[["zip", "city", "state", "YRS"]] = strip.(data[["zip", "city", "state", "YRS"]])
